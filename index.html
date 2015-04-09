@@ -10,6 +10,9 @@
 				width:80px;
 				height:30px;
 			}
+			#chunkSize{
+				width:50px;
+			}
 		</style>
 	</head>
 	<body>
@@ -18,13 +21,13 @@
 		<script src="playSlice.js"></script>
 		<fieldset>
 			<legend>set your file url and slice number</legend>
-			<input id="url" type="text" value="test.webm"/>
-			<input id="chunkNum" type="text" value="5"/>
+			<input id="url" type="text" value="hololens.webm"/>
+			<input id="chunkSize" type="text" value="1024"/><label>KB</label>
 			<button onclick="readySlice()" > SliceFile</button>
 		</fieldset>
 		<fieldset>
 			<legend>set a jsonFile to play</legend>
-			<input id="jsonFile" type="text" value="uploads/test.webm.json"/>
+			<input id="jsonFile" type="text" value="uploads/hololens.json"/>
 			<button onclick="readyPlay()" > PlaySlice</button>
 		</fieldset>
 		<fieldset>

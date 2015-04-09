@@ -1,5 +1,5 @@
 //open the will-be-sliced file
-function loadClientFile(url,callback){  //url only can be a file name now  please wait
+function loadClientFile(url,callback){
 	var xhr=new XMLHttpRequest();
 	xhr.open('GET',url, true);
 	xhr.responseType='arraybuffer';
@@ -14,15 +14,19 @@ function loadClientFile(url,callback){  //url only can be a file name now  pleas
 }
 //entry function
 function readySlice(){
-	var url=document.getElementById('url').value;
-	var chunkNum=document.getElementById('chunkNum').value;
-	var fileName=url;
+	var url=new String(document.getElementById('url').value);
+	var chunkSize=1024*document.getElementById('chunkSize').value;
+	//get the filename of the URL
+	var fileName=url.substr(url.lastIndexOf('\\')+1);
+	var fileName=fileName.substr(url.lastIndexOf('/')+1);
+	var fileName=fileName.substring(0,url.lastIndexOf('.'));
+	//send chunk and create json array
 	loadClientFile(url,function(response){
 		var file=new Blob([response],{type: 'video/webm'});
-		var chunkSize=Math.ceil(file.size / chunkNum);
+		var chunkNum=Math.ceil(file.size / chunkSize);
 		//json
 		var fileJson={};
-		fileJson["fileName"]=fileName; 
+		fileJson["fileName"]=fileName+".webm"; 
 		fileJson["chunkJsons"]=[];
 
 		//send chunk
@@ -30,10 +34,10 @@ function readySlice(){
 		(function sendChunk(i){
 			var startByte=chunkSize*i;
 			var chunk=file.slice(startByte,startByte+chunkSize);
-			var chunkName="slice"+i+".webm";
+			var chunkName=fileName+i+".webm";
 			//write json
 			var chunkJson={};
-			chunkJson["chunkName"]="uploads/"+chunkName;
+			chunkJson["chunkName"]="uploads/"+fileName+"/"+chunkName;
 			chunkJson["chunkOffset"]=startByte;
 			chunkJson["chunkSize"]=chunkSize;
 			fileJson["chunkJsons"].push(chunkJson);
@@ -43,6 +47,7 @@ function readySlice(){
 			xhr.open('POST',url,true);
 			xhr.setRequestHeader("X-File-Name",chunkName);
 			xhr.setRequestHeader("X-File-Size",chunk.size);
+			xhr.setRequestHeader("X-Dir-Name",fileName);
 			//xhr.setRequestHeader("Content-Type","multipart/form-data");
 			var formdata=new FormData(); 
 			formdata.append("file",chunk);
@@ -57,31 +62,32 @@ function readySlice(){
 				}
 				else{
 					alert("chunk send successfully")
-					//写json
+					//upload json
 					var jsonString = JSON.stringify(fileJson);
 					var jsonName=fileName+".json";
 					uploadJson(jsonString,jsonName);
 				}
 			}
 		}
-		 )(i);
-	})
+		)(i);
+	}
+	);
 }
 function uploadJson(jsonString,jsonName){
-	url="saveJson.php";
-	var xhr=new XMLHttpRequest();
-	xhr.open("POST",url,true);
-	var formdata=new FormData();
-	xhr.setRequestHeader("X-File-Name",jsonName);
-	formdata.append("json",jsonString);
-	xhr.send(formdata);
-	xhr.onload=function(){
-		if(xhr.status!=200){
-			alert("send json error");
-		}
-		else{
-			//alert(xhr.response);
-			alert("json send successfully");
-		}
+url="saveJson.php";
+var xhr=new XMLHttpRequest();
+xhr.open("POST",url,true);
+var formdata=new FormData();
+xhr.setRequestHeader("X-File-Name",jsonName);
+formdata.append("json",jsonString);
+xhr.send(formdata);
+xhr.onload=function(){
+	if(xhr.status!=200){
+		alert("send json error");
 	}
+	else{
+		//alert(xhr.response);
+		alert("json send successfully");
+	}
+}
 }
