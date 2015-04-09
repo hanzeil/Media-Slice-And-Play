@@ -1,23 +1,35 @@
 <html>
 	<head>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" /> 
 		<style>
 			body{
 				text-align: center;
 			}
+			button{
+				width:80px;
+				height:30px;
+			}
 		</style>
 	</head>
 	<body>
-		<h1>A FileSlice Simple</h1>
+		<h1>A FileSlice Simple Example</h1>
 		<script src="sliceFile.js"></script>
+		<script src="playSlice.js"></script>
 		<fieldset>
-			<legend>set your file url</legend>
-			<input id="url" type="text" />
+			<legend>set your file url and slice number</legend>
+			<input id="url" type="text" value="test.webm"/>
+			<input id="chunkNum" type="text" value="5"/>
+			<button onclick="readySlice()" > SliceFile</button>
 		</fieldset>
 		<fieldset>
-			<legend>set your slice number</legend>
-			<input id="chunkNum" type="text" />
+			<legend>set a jsonFile to play</legend>
+			<input id="jsonFile" type="text" value="uploads/test.webm.json"/>
+			<button onclick="readyPlay()" > PlaySlice</button>
 		</fieldset>
-			<button onclick="ready()" > SliceFile</button>
-			<pre id='log'></pre>
+		<fieldset>
+			<legend>Video</legend>
+			<video id="v" width="640" height="480" autoplay controls> </video>
+		</fieldset>
 	</body>
 </html>
