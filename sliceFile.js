@@ -1,25 +1,38 @@
+var infoDiv;
+window.onload = function () {
+	infoDiv = document.getElementById('infoDiv');
+	infoDiv.innerHTML = '';
+}
+infoDiv = document.getElementById('infoDiv');
 //entry function
 function readySlice(){
 	//get the filename of the URL
 	var file=document.getElementById('file').files[0];
+	if(!file){
+		alert("no file seleted");
+		return false;
+	}
 	var chunkSize=1024*document.getElementById('chunkSize').value;
+	chunkSize=chunkSize<file.size?chunkSize:file.size;
 	var fileName=file.name;
 	var fileType=fileName.substr(fileName.lastIndexOf('.')+1);
 	var fileName=fileName.substring(0,fileName.lastIndexOf('.'));
 	//judge the type of the media file
-	if(fileType=="webm"){
-		sliceWebm(file,fileName,chunkSize);
+	if(fileType=="webm" || fileType=="mp4"){
+		sliceAndSend(file,fileName,fileType,chunkSize);
 	}
 	else{
 		alert("file type is not supported");
 	}
 }
-//send chunk and create json array
-function sliceWebm(file,fileName,chunkSize){
+//slice Webm file and send chunk and create json array
+function sliceAndSend(file,fileName,fileType,chunkSize){
 	var chunkNum=Math.ceil(file.size / chunkSize);
 	//json
 	var fileJson={};
-	fileJson["fileName"]=fileName+".webm"; 
+	fileJson["fileName"]=fileName+"."+fileType; 
+	fileJson["fileType"]=fileType;
+	fileJson["fileLength"]=file.size;
 	fileJson["chunkJsons"]=[];
 
 	//send chunk
@@ -27,7 +40,7 @@ function sliceWebm(file,fileName,chunkSize){
 	(function sendChunk(i){
 		var startByte=chunkSize*i;
 		var chunk=file.slice(startByte,startByte+chunkSize);
-		var chunkName=fileName+i+".webm";
+		var chunkName=fileName+i+"."+fileType;
 		//write json
 		var chunkJson={};
 		chunkJson["chunkName"]="uploads/"+fileName+"/"+chunkName;
@@ -82,3 +95,4 @@ function uploadJson(jsonString,jsonName){
 		}
 	}
 }
+
