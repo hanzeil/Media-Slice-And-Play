@@ -1,9 +1,3 @@
-var infoDiv;
-window.onload = function () {
-	infoDiv = document.getElementById('infoDiv');
-	infoDiv.innerHTML = '';
-}
-infoDiv = document.getElementById('infoDiv');
 //entry function
 function readySlice(){
 	//get the filename of the URL

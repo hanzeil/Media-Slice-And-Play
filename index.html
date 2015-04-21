@@ -37,9 +37,6 @@
 	</head>
 	<body>
 		<h1>A FileSlice Simple Example</h1>
-		<script src="downloader.js"></script>
-		<script src="sliceFile.js"></script>
-		<script src="playSlice.js"></script>
 		<script src="mp4box_src/log.js"></script>
 		<script src="mp4box_src/DataStream.js"></script>
 		<script src="mp4box_src/descriptor.js"></script>
@@ -47,6 +44,10 @@
 		<script src="mp4box_src/text-mp4.js"></script>
 		<script src="mp4box_src/isofile.js"></script>
 		<script src="mp4box_src/mp4box.js"></script>
+		<script src="movieInfo"></script>
+		<script src="downloader.js"></script>
+		<script src="sliceFile.js"></script>
+		<script src="playSlice.js"></script>
 		<fieldset>
 			<legend>Set your file url and slice number</legend>
 			<input type="file" id="file" name="file" />
@@ -55,13 +56,12 @@
 		</fieldset>
 		<fieldset>
 			<legend>Set a jsonFile to play</legend>
-			<input id="jsonFile" type="text" value="uploads/hololens.json"/>
+			<input id="jsonFile" type="text" value="uploads/test.json"/>
 		</fieldset>
 		<fieldset>
 			<legend>Controls</legend>
-			<button onclick="readyPlay()" id="playButton"> Play</button>
-			<button  id="loadButton"> Load</button>
-			<button  id="initButton"> Init</button>
+			<button onclick="play()" id="playButton"> Play</button>
+			<button  onclick="reset()"  id="resetButton"> Reset</button>
 		</fieldset>
 		<fieldset>
 			<legend>Video</legend>
