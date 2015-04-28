@@ -152,6 +152,12 @@ var BoxParser = {
 		}
 		var size = stream.readUint32();
 		var type = stream.readString(4);
+		//HACK: 'minf' is shifted one byte, move one byte up and read again
+        if(type.startsWith("inf")){
+            stream.seek(start-1);
+            size = stream.readUint32();
+            type = stream.readString(4);
+        }
 		Log.d("BoxParser", "Found box of type "+type+" and size "+size+" at position "+start+" in the current buffer ("+(stream.buffer.fileStart+start)+" in the file)");
 		hdr_size = 8;
 		if (type == "uuid") {
