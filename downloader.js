@@ -15,9 +15,6 @@ function Downloader() {
 	this.chunkTotalNum=0;
 }
 
-Downloader.prototype.setDownloadTimeoutCallback = function(callback) {
-	this.setDownloadTimeoutCallback = callback;
-}
 
 Downloader.prototype.reset = function() {
 	this.currentLength = 0;

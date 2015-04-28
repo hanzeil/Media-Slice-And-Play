@@ -46,25 +46,19 @@ function play(){
 function playWebm(json){
 	var sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vorbis,vp8"');
 	var chunkJsons=json.chunkJsons;
-	//read chunks
-	var i=0;
-	(function readChunk(i){
-		loadChunk(chunkJsons[i].chunkName,
-			function(response){
-				var file = new Blob([new Uint8Array(response)], {type: 'video/webm'});
-				var reader=new FileReader();
-				reader.readAsArrayBuffer(file);
-				reader.onload=function(){
-					sourceBuffer.appendBuffer(new Uint8Array(reader.result));
-					if(i<chunkJsons.length-1){
-						i++;
-						readChunk(i);
-					}
-				}
+	downloader.setCallback(function(response,eof){
+		downloader.setCurrentLength(response.byteLength+downloader.currentLength);
+		var file = new Blob([new Uint8Array(response)], {type: 'video/webm'});
+		var reader=new FileReader();
+		reader.readAsArrayBuffer(file);
+		reader.onload=function(){
+			if(eof==false){
+				sourceBuffer.appendBuffer(new Uint8Array(reader.result));
 			}
-		)
-	}
-	)(i);	
+		}
+	});
+	downloader.init(json);
+	downloader.start();
 }
 function playMp4(json){
 	var ms = video.ms;
@@ -98,6 +92,9 @@ function playMp4(json){
 		sb.pendingAppends.push({ id: id, buffer: buffer, sampleNum: sampleNum });
 		Log.i("Application","Received new segment for track "+id+" up to sample #"+sampleNum+", segments pending append: "+sb.pendingAppends.length);
 		onUpdateEnd.call(sb);
+		if(id==1){
+			downloader.setInterval(1000);
+		}
 	}
 	autoplay=true;
 	downloader.setCallback(
@@ -255,11 +252,11 @@ function onSeeking(e) {
 		/* Chrome fires twice the seeking event with the same value */
 		Log.i("Application", "Seeking called to video time "+Log.getDurationString(video.currentTime));
 		downloader.stop();
-		resetCues();
+		//resetCues();
+		video.lastSeekTime = video.currentTime;
 		seek_info = mp4box.seek(video.currentTime, true);
 		downloader.setCurrentLength(seek_info.offset);
 		downloader.resume();
-		video.lastSeekTime = video.currentTime;
 	}
 }
 function resetCues() {

@@ -3,7 +3,8 @@ function readySlice(){
 	//get the filename of the URL
 	var file=document.getElementById('file').files[0];
 	if(!file){
-		alert("no file seleted");
+		Log.e("File","No file seleted");
+		alert("No file seleted");
 		return false;
 	}
 	var chunkSize=1024*document.getElementById('chunkSize').value;
@@ -16,7 +17,8 @@ function readySlice(){
 		sliceAndSend(file,fileName,fileType,chunkSize);
 	}
 	else{
-		alert("file type is not supported");
+		Log.e("File","File type is not supported");
+		alert("File type is not supported");
 	}
 }
 //slice Webm file and send chunk and create json array
@@ -34,6 +36,7 @@ function sliceAndSend(file,fileName,fileType,chunkSize){
 	(function sendChunk(i){
 		var startByte=chunkSize*i;
 		var chunk=file.slice(startByte,startByte+chunkSize);
+		chunkSize=chunk.size;
 		var chunkName=fileName+i+"."+fileType;
 		//write json
 		var chunkJson={};
@@ -54,15 +57,16 @@ function sliceAndSend(file,fileName,fileType,chunkSize){
 		xhrSend.send(formdata);
 		xhrSend.onload=function(){
 			if(xhrSend.status!=200){
-				alert("send chunk error");
+				alert("Send chunk"+i+"error");
+				Log.e("Send chunk"+i+"error");
 			}
 			if(i<chunkNum-1){
 				i++;
 				sendChunk(i);
 			}
 			else{
-				alert("send chunks successfully")
 				//upload json
+				Log.i("Upload","Send chunks Successfully");
 				var jsonString = JSON.stringify(fileJson);
 				var jsonName=fileName+".json";
 				uploadJson(jsonString,jsonName);
@@ -81,11 +85,14 @@ function uploadJson(jsonString,jsonName){
 	xhr.send(formdata);
 	xhr.onload=function(){
 		if(xhr.status!=200){
-			alert("send json-file error");
+			alert("Send json-file error");
+			Log.e("Upload","Send json-file error")
+			return false;
 		}
 		else{
 			//alert(xhr.response);
-			alert("send json-files successfully");
+			Log.e("Upload","Send json-files Successfully");
+			alert("Send json-files Successfully");
 		}
 	}
 }
