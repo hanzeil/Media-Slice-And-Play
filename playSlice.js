@@ -103,7 +103,13 @@ function playMp4(json) {
 		function(response, end, error) {
 			if (response) {
 				var currentLength = mp4box.appendBuffer(response);
-				downloader.setCurrentLength(currentLength);
+				// 以下if-else暂时处理mp4box处理mp4文件头部时，返回的currentLength错误。
+				var chunkNum = downloader.chunkNum;
+				if (chunkNum < 5 && currentLength > json.chunkJsons[chunkNum + 1].chunkOffset) {
+					downloader.setCurrentLength(response.byteLength * (chunkNum + 1));
+				} else {
+					downloader.setCurrentLength(currentLength);
+				}
 			}
 			if (end) {
 				mp4box.flush();
