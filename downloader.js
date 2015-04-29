@@ -5,7 +5,7 @@ function Downloader() {
 	this.chunkSize = 0;
 	this.chunkOffset = 0;
 	this.totalLength = 0;
-	this.chunkTimeout = 10;
+	this.chunkTimeout = 500;
 	this.url = null;
 	this.json = null;
 	this.callback = null;
@@ -120,6 +120,7 @@ Downloader.prototype.getFile = function() {
 				if(nextChunk.chunkOffset<=dl.currentLength){
 					dl.setChunk(dl.chunkNum+1);
 				}
+				dl.chunkTimeout=computeWaitingTimeFromBuffer();
 				window.setTimeout(dl.getFile.bind(dl),dl.chunkTimeout);
 			} else {
 				/* end of file */

@@ -571,7 +571,7 @@ MP4Box.prototype.releaseUsedSamples = function (id, sampleNum) {
 	for (var i = trak.lastValidSample; i < sampleNum; i++) {
 		size+=this.inputIsoFile.releaseSample(trak, i);
 	}
-	Log.d("MP4Box", "Track #"+id+" released samples up to "+sampleNum+" (total size: "+size+", remaining: "+this.inputIsoFile.samplesDataSize+")");
+	Log.i("MP4Box", "Track #"+id+" released samples up to "+sampleNum+" (total size: "+size+", remaining: "+this.inputIsoFile.samplesDataSize+")");
 	trak.lastValidSample = sampleNum;
 }
 
