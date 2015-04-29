@@ -13,26 +13,70 @@
 			#chunkSize{
 				width:50px;
 			}
+			table {
+				width: 100%;
+				margin: 0 0 10px 0;
+				background: #FFFFFF;
+				border: 1px solid #333333;
+				border-collapse: collapse;
+				font-size: 100%;
+			}
+ 
+			td, th {
+				border-bottom: 1px solid #333333;
+				padding: 2px 2px;
+				text-align: left;
+			}
+			 
+			th {
+				background: #EEEEEE;
+				text-align: center;
+			}
+
 		</style>
 	</head>
 	<body>
 		<h1>A FileSlice Simple Example</h1>
+		<script src="mp4box_src/log.js"></script>
+		<script src="mp4box_src/DataStream.js"></script>
+		<script src="mp4box_src/descriptor.js"></script>
+		<script src="mp4box_src/box.js"></script>
+		<script src="mp4box_src/text-mp4.js"></script>
+		<script src="mp4box_src/isofile.js"></script>
+		<script src="mp4box_src/mp4box.js"></script>
+		<script src="mp4box_src/box-parse.js"></script>
+		<script src="mp4box_src/box-unpack.js"></script>
+		<script src="mp4box_src/box-write.js"></script>
+		<script src="movieInfo.js"></script>
+		<script src="downloader.js"></script>
 		<script src="sliceFile.js"></script>
 		<script src="playSlice.js"></script>
 		<fieldset>
-			<legend>set your file url and slice number</legend>
+			<legend>Set your file url and slice number</legend>
 			<input type="file" id="file" name="file" />
 			<input id="chunkSize" type="text" value="1024"/><label>KB</label>
 			<button onclick="readySlice()" > SliceFile</button>
 		</fieldset>
 		<fieldset>
-			<legend>set a jsonFile to play</legend>
-			<input id="jsonFile" type="text" value="uploads/chrome.json"/>
-			<button onclick="readyPlay()" > PlaySlice</button>
+			<legend>Set a jsonFile to play</legend>
+			<input id="jsonFile" type="text" value="uploads/test.json"/>
+		</fieldset>
+		<fieldset>
+			<legend>Controls</legend>
+			<button onclick="play()" id="playButton"> Play</button>
+			<button  onclick="reset()"  id="resetButton"> Reset</button>
 		</fieldset>
 		<fieldset>
 			<legend>Video</legend>
-			<video id="v" width="640" height="480" autoplay controls> </video>
+			<table>
+				<td>
+					<video id="v" width="640" height="480" autoplay controls> </video>
+				</td>
+				<td>
+					<div id="infoDiv">
+					</div>
+				</td>
+			</table>
 		</fieldset>
 	</body>
 </html>
