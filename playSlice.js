@@ -23,7 +23,7 @@ function loadJson(jsonFile, callback) {
 	xhr.send();
 	xhr.onload = function() {
 		if (xhr.status != 200) {
-			log.e("Load json file error");
+			Log.e("Load json file error");
 			alert("Load json file error");
 			return false;
 		}
