@@ -27,24 +27,24 @@ Downloader.prototype.reset = function() {
 	this.eof = false;
 }
 
-Downloader.prototype.setChunkSize = function(_size) {
-	this.chunkSize = _size;
+Downloader.prototype.setChunkSize = function(size) {
+	this.chunkSize = size;
 }
 
-Downloader.prototype.setCurrentLength = function(_currentLength) {
-	this.currentLength = _currentLength;
+Downloader.prototype.setCurrentLength = function(currentLength) {
+	this.currentLength = currentLength;
 	this.eof = false;
 }
 
-Downloader.prototype.setInterval = function(_timeout) {
-	this.chunkTimeout = _timeout;
+Downloader.prototype.setInterval = function(timeout) {
+	this.chunkTimeout = timeout;
 }
 
-Downloader.prototype.setUrl = function(_url) {
-	this.url = _url;
+Downloader.prototype.setUrl = function(url) {
+	this.url = url;
 }
-Downloader.prototype.init = function(_json){
-	this.json = _json;
+Downloader.prototype.init = function(json){
+	this.json = json;
 	var chunk=this.json.chunkJsons[this.chunkNum];
 	this.currentLength=0;
 	this.chunkSize=chunk.chunkSize;
@@ -53,15 +53,15 @@ Downloader.prototype.init = function(_json){
 	this.totalLength=this.json.fileLength;
 	this.chunkTotalNum=this.json.chunkJsons.length;
 }
-Downloader.prototype.setChunk = function(_chunkNum){
-	this.chunkNum=_chunkNum;
+Downloader.prototype.setChunk = function(chunkNum){
+	this.chunkNum=chunkNum;
 	var Chunk=this.json.chunkJsons[this.chunkNum];
 	this.chunkSize=Chunk.chunkSize;
 	this.chunkOffset=Chunk.chunkOffset;
 	this.url=Chunk.chunkName;
 }
-Downloader.prototype.setCallback = function(_callback) {
-	this.callback = _callback;
+Downloader.prototype.setCallback = function(callback) {
+	this.callback = callback;
 }
 
 Downloader.prototype.isStopped = function () {

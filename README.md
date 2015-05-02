@@ -1,7 +1,7 @@
 #Media Slice And Play
 ##概述
 对于一个逻辑上完整的可以播放的视频，在服务器上实际存放的却是一堆视频切片，而且切片的URI不一定相同，甚至存放在不同的服务器上。在服务器上用一个Json文件描述逻辑文件的信息，包括文件的类型、大小、文件名，每个切片的URI、大小、偏移量等信息。如下图所示。
-<img src="http://hanzeil.xyz/media_slice_and_play/introduction" width = "500"  alt="Introduction" align=center />
+<img src="http://hanzeil.xyz/media_slice_and_play/image/introduction.png" width = "500"  alt="Introduction" align=center />
 ###本项目具有两个模块
 
 * 用JS将客户端的视频文件切片，并上传切片和Json描述文件到服务器的uploads/目录。
@@ -50,7 +50,8 @@
 		}]
 	}
 	```
-##播放
+
+##播放MP4
 用HTML5播放媒体，需要用到的技术：
 
 *	[Media Source Extension API](http://www.w3.org/TR/media-source/)  
@@ -63,7 +64,9 @@
 	*	构造Media Segment,用于Media Source Extension API
 	*	提取MP4文件中的样本，创建TextTracks
 	*	More and More
+
 ###概念
+
 *	MediaSource  
 	MediaSource对象表示HTMLMediaElement的媒体数据源。它具有一个SourceBuffer对象列表，可以用来添加媒体数据用来播放。MediaSource对象被web应用所创建，然后连接到一个HTMLMediaElement上。引用通过SourceBuffer列表中的SourceBuffer对象添加媒体数据到源中。当需播放这些媒体数据时，HTMLMediaElement从MediaSource对象中获取这些媒体数据。
 
@@ -87,5 +90,17 @@
 
 *	Track ID（轨道ID）  
 	轨道ID是一个轨道的标示符。轨道ID在轨道描述里识别媒体分片属于哪个轨道。
+
+
+###UML
+类图
+	<img src="http://hanzeil.xyz/media_slice_and_play/image/class diagram.png" width = "500"  alt="ClassDiagram" align=center />
+顺序图
+	<img src="http://hanzeil.xyz/media_slice_and_play/image/sequence diagram.png" width = "500"  alt="SequenceDiagram" align=center />
+
+
+
+
+
 
 
