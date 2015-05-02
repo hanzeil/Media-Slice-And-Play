@@ -1,7 +1,7 @@
 #Media Slice And Play
 ##概述
 对于一个逻辑上完整的可以播放的视频，在服务器上实际存放的却是一堆视频切片，而且切片的URI不一定相同，甚至存放在不同的服务器上。在服务器上用一个Json文件描述逻辑文件的信息，包括文件的类型、大小、文件名，每个切片的URI、大小、偏移量等信息。如下图所示。
-<img src="http://hanzeil.xyz/media_slice_and_play/image/introduction.png" width = "500"  alt="Introduction" align=center />
+![Introduction](https://github.com/hanzeil/media_slice_and_play/raw/master/image/introduction.png?raw=true)
 ###本项目具有两个模块
 
 * 用JS将客户端的视频文件切片，并上传切片和Json描述文件到服务器的uploads/目录。
@@ -56,7 +56,7 @@
 
 *	[Media Source Extension API](http://www.w3.org/TR/media-source/)  
 	Media Source Extension API允许JavaScript向`<video>`和`<audio>`标签动态构造媒体流，它定义对象允许JavaScript加载媒体分片转化为HTMLMediaElement.同时，通过一种缓冲模型也可以实现用浏览器播放无序被添加的媒体分片。在[MSE-REGISTRY](http://www.w3.org/TR/media-source/byte-stream-format-registry.html)中定义了媒体流的格式规范。
-	<img src="http://www.w3.org/TR/media-source/pipeline_model.png" width = "500"  alt="Introduction" align=center />
+	![pieline_model](http://www.w3.org/TR/media-source/pipeline_model.png)
 
 *	[MP4Box.js](https://github.com/gpac/mp4box.js/)  
 	MP4Box是一个JavaScript库，可以处理MP4文件，是GPAC项目中的MP4Box的JS版本，它可以用来
@@ -93,10 +93,10 @@
 
 
 ###UML
-类图
-	<img src="http://hanzeil.xyz/media_slice_and_play/image/class diagram.png" width = "500"  alt="ClassDiagram" align=center />
-顺序图
-	<img src="http://hanzeil.xyz/media_slice_and_play/image/sequence diagram.png" width = "500"  alt="SequenceDiagram" align=center />
+####类图
+![ClassDiagram](https://github.com/hanzeil/media_slice_and_play/raw/master/image/class%20diagram.png?raw=true)
+####顺序图
+![SequenceDiagram](https://github.com/hanzeil/media_slice_and_play/raw/master/image/sequence%20diagram.png)
 
 
 
