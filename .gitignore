@@ -2,3 +2,4 @@ upload/*
 *.webm
 *.mp4
 *.json
+.DS_Store
