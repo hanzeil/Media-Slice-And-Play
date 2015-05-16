@@ -276,7 +276,9 @@ function releaseBuffers() {
 			var endRange = sb.buffered.end(j);
 			if (sb.updating != true && startRange < endRange)
 				Log.i("MSE - SourceBuffer", "remove buffer from time(" + Log.getDurationString(startRange) + ") to (" + Log.getDurationString(endRange) + ")");
-			sb.remove(startRange, endRange);
+			if(sb.updating!=true){
+				sb.remove(startRange, endRange);
+			}
 		}
 	}
 }
