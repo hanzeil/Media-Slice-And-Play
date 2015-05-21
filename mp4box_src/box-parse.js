@@ -672,3 +672,40 @@ BoxParser.sidxBox.prototype.parse = function(stream) {
 		ref.SAP_delta_time = tmp_32 & 0xFFFFFFF;
 	}
 }
+
+BoxParser.emsgBox.prototype.parse = function(stream) {
+	this.parseFullHeader(stream);
+	this.scheme_id_uri 				= stream.readCString();
+	this.value 						= stream.readCString();
+	this.timescale 					= stream.readUint32();
+	this.presentation_time_delta 	= stream.readUint32();
+	this.event_duration			 	= stream.readUint32();
+	this.id 						= stream.readUint32();
+	var message_size = this.size - (4*4 + (this.scheme_id_uri.length+1) + (this.value.length+1));
+	this.message_data = stream.readUint8Array(message_size);
+}
+
+BoxParser.prftBox.prototype.parse = function(stream) {
+	this.parseFullHeader(stream);
+	this.ref_track_id = stream.readUint32();
+	this.ntp_timestamp = stream.readUint64();
+	if (this.version === 0) {
+		this.media_time = stream.readUint32();
+	} else {
+		this.media_time = stream.readUint64();
+	}
+}
+
+BoxParser.psshBox.prototype.parse = function(stream) {
+	this.parseFullHeader(stream);
+	this.system_id = stream.readUint8Array(16);
+	if (this.version > 0) {
+		var count = stream.readUint32();
+		this.kid = [];
+		for (var i = 0; i < count; i++) {
+			this.kid[i] = stream.readUint8Array(16);
+		}
+	} 
+	var size = stream.readUint32();
+	this.data = stream.readUint8Array(size);
+}
