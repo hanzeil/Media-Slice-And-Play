@@ -88,7 +88,7 @@ function uploadJson(jsonString, jsonName) {
 			return false;
 		} else {
 			//alert(xhr.response);
-			Log.e("Upload", "ALL is Successful");
+			Log.i("Upload", "ALL is Successful");
 			alert("ALL is Successful");
 		}
 	}

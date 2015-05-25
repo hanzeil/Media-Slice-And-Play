@@ -141,6 +141,7 @@ Downloader.prototype.start = function() {
 Downloader.prototype.resume=function(){
 	Log.i("Downloader", "resuming file download");
 	this.isActive=true;
+	//judge which chunk need to download
 	for(this.chunkNum=0;this.chunkNum<this.chunkTotalNum;this.chunkNum++){
 		if(this.json.chunkJsons[this.chunkNum].chunkOffset>=this.currentLength){
 			break;

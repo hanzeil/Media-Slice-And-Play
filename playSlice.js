@@ -243,6 +243,8 @@ function onSeeking(e) {
 			start = video.buffered.start(i);
 			end = video.buffered.end(i);
 			if (video.currentTime >= start && video.currentTime <= end) {
+				downloader.chunkTimeout=computeWaitingTimeFromBuffer();
+				window.setTimeout(downloader.getFile.bind(downloader),downloader.chunkTimeout);
 				return;
 			}
 		}
