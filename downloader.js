@@ -82,6 +82,11 @@ Downloader.prototype.getFile = function() {
 		this.callback(null, true);
 		return;
 	}
+	if(dl.isActive==false){
+		Log.i("Downloader", "File downloader is not active.");
+		this.callback(null,true);
+		return;
+	}
 	var xhr = new XMLHttpRequest();
 	xhr.open("GET", this.url, true);
 	xhr.responseType = "arraybuffer";
@@ -124,7 +129,10 @@ Downloader.prototype.getFile = function() {
 				window.setTimeout(dl.getFile.bind(dl),dl.chunkTimeout);
 			} else {
 				/* end of file */
+				dl.isActive=false;
+				dl.eof = true;
 				Log.i("Downloader", "File download done.");
+				dl.callback(null, true);
 			}
 		}
 	};

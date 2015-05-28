@@ -52,17 +52,21 @@ function playWebm(json) {
 	var sourceBuffer = mediaSource.addSourceBuffer('video/webm; codecs="vorbis,vp8"');
 	var chunkJsons = json.chunkJsons;
 	downloader.setCallback(function(response, eof) {
-		downloader.setCurrentLength(response.byteLength + downloader.currentLength);
-		var file = new Blob([new Uint8Array(response)], {
-			type: 'video/webm'
-		});
-		var reader = new FileReader();
-		reader.readAsArrayBuffer(file);
-		reader.onload = function() {
-			if (eof == false) {
-				sourceBuffer.appendBuffer(new Uint8Array(reader.result));
-				Log.i("MSE - SourceBuffer Appending new buffer");
-			}
+		if(eof==false){
+			downloader.setCurrentLength(response.byteLength + downloader.currentLength);
+			var file = new Blob([new Uint8Array(response)], {
+				type: 'video/webm'
+			});
+			var reader = new FileReader();
+			reader.readAsArrayBuffer(file);
+			reader.onload = function() {
+				if (eof == false) {
+					while(sourceBuffer.updating==true){
+					}
+					sourceBuffer.appendBuffer(new Uint8Array(reader.result));
+					Log.i("MSE","SourceBuffer Appending new buffer");
+				}
+			}	
 		}
 	});
 	downloader.init(json);
@@ -255,6 +259,7 @@ function onSeeking(e) {
 		releaseBuffers();
 		video.lastSeekTime = video.currentTime;
 		seek_info = mp4box.seek(video.currentTime, true);
+		downloader.eof=false;
 		downloader.setCurrentLength(seek_info.offset);
 		downloader.resume();
 	}
@@ -303,16 +308,17 @@ function computeWaitingTimeFromBuffer() {
 		for (var j = 0; j < sb.buffered.length; j++) {
 			startRange = sb.buffered.start(j);
 			endRange = sb.buffered.end(j);
-			if (sb.updating != true && currentTime - 10 > startRange) {
-				Log.i("MSE - SourceBuffer", "remove buffer from time(" + Log.getDurationString(startRange) + ") to (" + Log.getDurationString(currentTime) + ")");
-				sb.remove(startRange, currentTime - 10);
-			}
+
 			if (currentTime >= startRange && currentTime <= endRange) {
 				if (startRange >= maxStartRange) maxStartRange = startRange;
 				if (endRange <= minEndRange) minEndRange = endRange;
 				break;
 			}
-			//remove  played medias
+		}			
+		//remove  played medias
+		if (sb.updating != true && currentTime - 10 > maxStartRange) {
+			Log.i("MSE - SourceBuffer", "remove buffer from time(" + Log.getDurationString(maxStartRange) + ") to (" + Log.getDurationString(currentTime) + ")");
+			sb.remove(maxStartRange, currentTime - 10);
 		}
 	}
 
