@@ -31,7 +31,7 @@ function loadJson(jsonFile, callback) {
 	}
 }
 
-function play() {
+function readyPlay() {
 	playButton.disabled = true;
 	jsonFile = document.getElementById('jsonFile').value;
 	//ayalyze jsonFile
@@ -132,11 +132,6 @@ function mediaSourceClose() {
 	//log
 }
 
-function readyPlay() {
-	resetMediaSource();
-	playButton.disabled = true;
-}
-
 function reset() {
 	if (!downloader.isStopped()) {
 		downloader.stop();
@@ -150,6 +145,7 @@ function reset() {
 
 function resetMediaSource() {
 	window.MediaSource = window.MediaSource || window.WebkitMediaSource;
+	//close mediaSource
 	mediaSource = new MediaSource();
 	mediaSource.video = video;
 	video.ms = mediaSource;
