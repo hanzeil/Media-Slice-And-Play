@@ -62,6 +62,7 @@ function playWebm(json) {
 			reader.onload = function() {
 				if (eof == false) {
 					while(sourceBuffer.updating==true){
+
 					}
 					sourceBuffer.appendBuffer(new Uint8Array(reader.result));
 					Log.i("MSE","SourceBuffer Appending new buffer");
@@ -260,6 +261,8 @@ function onSeeking(e) {
 		video.lastSeekTime = video.currentTime;
 		seek_info = mp4box.seek(video.currentTime, true);
 		downloader.eof=false;
+		downloader.isAuto=false;
+		downloader.isManual
 		downloader.setCurrentLength(seek_info.offset);
 		downloader.resume();
 	}
@@ -313,18 +316,25 @@ function computeWaitingTimeFromBuffer() {
 				if (endRange <= minEndRange) minEndRange = endRange;
 				break;
 			}
+			else if(endRange>startRange){
+				if(sb.updating!=true){
+					sb.remove(startRange,endRange);
+				}
+			}
 		}			
 		//remove  played medias
 		if (sb.updating != true && currentTime - 10 > maxStartRange) {
 			Log.i("MSE - SourceBuffer", "remove buffer from time(" + Log.getDurationString(maxStartRange) + ") to (" + Log.getDurationString(currentTime) + ")");
-			sb.remove(maxStartRange, currentTime - 10);
+			if(sb.updating!=true){
+				sb.remove(maxStartRange, currentTime - 10);
+			}
 		}
 	}
 
 	duration = minEndRange - maxStartRange;
 	ratio = (currentTime - maxStartRange) / duration;
 	Log.i("Downloader", "Playback position (" + Log.getDurationString(currentTime) + ") in current buffer [" + Log.getDurationString(maxStartRange) + "," + Log.getDurationString(minEndRange) + "]: " + Math.floor(ratio * 100) + "%");
-	if (ratio >= 3 / (playbackRate + 3) || currentTime === 0) {
+	if (duration<20 || ratio >= 3 / (playbackRate + 3) || currentTime === maxStartRange) {
 		Log.i("Downloader", "Downloading immediately new data!");
 		/* when the currentTime of the video is at more than 3/4 of the buffered range (for a playback rate of 1), 
 		immediately fetch a new buffer */
