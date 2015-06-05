@@ -261,8 +261,6 @@ function onSeeking(e) {
 		video.lastSeekTime = video.currentTime;
 		seek_info = mp4box.seek(video.currentTime, true);
 		downloader.eof=false;
-		downloader.isAuto=false;
-		downloader.isManual
 		downloader.setCurrentLength(seek_info.offset);
 		downloader.resume();
 	}

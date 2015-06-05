@@ -13,7 +13,6 @@ function Downloader() {
 	this.setDownloadTimeoutCallback = null;
 	this.chunkNum=0;
 	this.chunkTotalNum=0;
-	this.isAuto=true;
 }
 
 
@@ -75,9 +74,6 @@ Downloader.prototype.getFileLength = function () {
 
 Downloader.prototype.getFile = function() {
 	var dl = this;
-	if(dl.isAuto==false) {
-		return ;
-	}
 	if (dl.totalLength && this.currentLength >= dl.totalLength) {
 		dl.eof = true;
 	}
@@ -129,7 +125,6 @@ Downloader.prototype.getFile = function() {
 				if(nextChunk.chunkOffset<=dl.currentLength){
 					dl.setChunk(dl.chunkNum+1);
 				}
-				dl.isAuto=true;
 				dl.chunkTimeout=computeWaitingTimeFromBuffer();
 				window.setTimeout(dl.getFile.bind(dl),dl.chunkTimeout);
 			}
