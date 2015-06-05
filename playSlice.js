@@ -90,7 +90,6 @@ function playMp4(json) {
 	}
 	mp4box.onSegment = function(id, user, buffer, sampleNum) {
 		var sb = user;
-		//saveBuffer(buffer, 'track-'+id+'-segment-'+sb.segmentIndex+'.m4s');
 		sb.segmentIndex++;
 		sb.pendingAppends.push({
 			id: id,
@@ -98,22 +97,13 @@ function playMp4(json) {
 			sampleNum: sampleNum
 		});
 		Log.i("Application", "Received new segment for track " + id + " up to sample #" + sampleNum);
-		onUpdateEnd.call(sb);
-		if (id == 1) {
-			downloader.setInterval(1000);
-		}
+		onUpdate.call(sb);
 	}
 	downloader.setCallback(
 		function(response, end, error) {
 			if (response) {
 				var currentLength = mp4box.appendBuffer(response);
-				// 以下if-else暂时处理mp4box处理mp4文件头部时，返回的currentLength错误。
-				var chunkNum = downloader.chunkNum;
-				if (chunkNum < 5 && currentLength > json.chunkJsons[chunkNum + 1].chunkOffset) {
-					downloader.setCurrentLength(response.byteLength * (chunkNum + 1));
-				} else {
-					downloader.setCurrentLength(currentLength);
-				}
+				downloader.setCurrentLength(currentLength);
 			}
 			if (end) {
 				mp4box.flush();
@@ -137,6 +127,7 @@ function reset() {
 		downloader.stop();
 	}
 	releaseBuffers();
+	removeBuffer();
 	playButton.disabled = false;
 	downloader.reset();
 	resetMediaSource();
@@ -176,7 +167,7 @@ function initializeAllSourceBuffers() {
 			var track = info.tracks[i];
 			addBuffer(video, track.id, track.codec);
 		}
-		initializeSourceBuffers();
+		addInitSegments2SourceBuffers();
 	}
 }
 
@@ -195,34 +186,47 @@ function addBuffer(video, track_id, codec) {
 		sb.pendingAppends = [];
 	}
 }
-
-function initializeSourceBuffers() {
+function removeBuffer() {
+	var sb;
+	var ms = video.ms;
+	for (var i = 0; i < ms.sourceBuffers.length; i++){
+		sb = ms.sourceBuffers[i];
+		ms.removeSourceBuffer(sb);
+		break;
+	}
+	if (ms.sourceBuffers.length === 0) {
+		return true;
+	} else {
+		return false;
+	}
+}
+function addInitSegments2SourceBuffers() {
 	var initSegs = mp4box.initializeSegmentation();
 	for (var i = 0; i < initSegs.length; i++) {
 		var sb = initSegs[i].user;
-		sb.addEventListener("updateend", onInitAppended);
 		Log.i("MSE - SourceBuffer #" + sb.id, "Appending initialization data");
-		sb.appendBuffer(initSegs[i].buffer);
 		sb.segmentIndex = 0;
-	}
-}
-
-function onInitAppended(e) {
-	var sb = e.target;
-	if (sb.ms.readyState === "open") {
 		sb.sampleNum = 0;
-		sb.removeEventListener('updateend', onInitAppended);
+		sb.appendBuffer(initSegs[i].buffer);
 		sb.addEventListener('updateend', onUpdateEnd.bind(sb));
-		/* In case there are already pending buffers we call onUpdateEnd to start appending them*/
-		onUpdateEnd.call(sb);
+		/* In case there are already pending buffers we call onUpdate to start appending them*/
+		onUpdate.call(sb);
 	}
 }
-
+function onUpdate(){
+	if (this.ms.readyState === "open" && this.updating === false && this.pendingAppends.length > 0) {
+		var obj = this.pendingAppends.shift();
+		Log.i("MSE - SourceBuffer #" + this.id, "Appending new buffer");
+		this.sampleNum = obj.sampleNum;
+		this.appendBuffer(obj.buffer);
+	}
+}
 function onUpdateEnd() {
 	if (this.sampleNum) {
 		mp4box.releaseUsedSamples(this.id, this.sampleNum);
 		delete this.sampleNum;
 	}
+	//In case there may be also some buffer needed to append and it won't active the 'updateend' Event.I dont know why
 	if (this.ms.readyState === "open" && this.updating === false && this.pendingAppends.length > 0) {
 		var obj = this.pendingAppends.shift();
 		Log.i("MSE - SourceBuffer #" + this.id, "Appending new buffer");
@@ -269,7 +273,6 @@ function resetCues() {
 		}
 	}
 }
-
 function releaseBuffers() {
 	var ms = video.ms;
 	for (var i = 0; i < ms.activeSourceBuffers.length; i++) {

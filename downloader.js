@@ -112,9 +112,9 @@ Downloader.prototype.getFile = function() {
 			dl.callback(buffer, dl.eof); 
 			if (dl.isActive === true && dl.eof === false) {
 				if (dl.setDownloadTimeoutCallback) dl.setDownloadTimeoutCallback(timeoutDuration);
-				Log.i("Downloader", "Next download scheduled in "+dl.chunkTimeout+ ' ms.');
 				// the next chunk
 				if(dl.chunkNum+1>=dl.json.chunkJsons.length){
+					dl.isActive=false;
 					dl.eof = true;
 					Log.i("Downloader", "File download done.");
 					dl.callback(null, true);
@@ -127,12 +127,6 @@ Downloader.prototype.getFile = function() {
 				}
 				dl.chunkTimeout=computeWaitingTimeFromBuffer();
 				window.setTimeout(dl.getFile.bind(dl),dl.chunkTimeout);
-			} else {
-				/* end of file */
-				dl.isActive=false;
-				dl.eof = true;
-				Log.i("Downloader", "File download done.");
-				dl.callback(null, true);
 			}
 		}
 	};
