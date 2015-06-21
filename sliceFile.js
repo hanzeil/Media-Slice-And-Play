@@ -13,6 +13,7 @@ function readySlice() {
 		var fileType = fileName.substr(fileName.lastIndexOf('.') + 1);
 		var fileName = fileName.substring(0, fileName.lastIndexOf('.'));
 		//judge the type of the media file
+		Log.i("Upload","Start slice and upload file: "+fileName+"."+fileType+" slice size: "+chunkSize);
 		if (fileType == "webm" || fileType == "mp4") {
 			sliceAndSend(file, fileName, fileType, chunkSize);
 		} else {
@@ -56,15 +57,15 @@ function sliceAndSend(file, fileName, fileType, chunkSize) {
 		xhrSend.send(formdata);
 		xhrSend.onload = function() {
 			if (xhrSend.status != 200) {
-				alert("Send chunk" + i + "error");
-				Log.e("Send chunk" + i + "error");
+				alert("Upload","Send chunk" + i + "error");
+				Log.e("Upload","Send chunk" + i + "error");
 			}
 			if (i < chunkNum - 1) {
 				i++;
 				sendChunk(i);
 			} else {
 				//upload json
-				Log.i("Upload", "Send chunks Successfully");
+	 
 				var jsonString = JSON.stringify(fileJson);
 				var jsonName = fileName + ".json";
 				uploadJson(jsonString, jsonName);
